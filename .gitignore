@@ -1,0 +1,23 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# ⚠️ ملفات البيئة — تحتوي على API Keys — لا تُرفع أبداً
+.env
+.env.*
+!.env.example
+
+# قواعد بيانات المتجهات — ملفات ثنائية كبيرة
+chroma_db/
+backend/chroma_db/
+
+# ملفات النظام
+.DS_Store
+Thumbs.db

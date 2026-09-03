@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- ======================================================
+         GCC Customer Support AI — الواجهة الأمامية العربية
+         يوم 3 من الكورس: ربط الواجهة بـ Multi-Agent Backend
+         ====================================================== -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>نظام دعم العملاء بالذكاء الاصطناعي — GCC AI</title>
+    <meta name="description" content="نظام دعم عملاء متعدد الوكلاء بالذكاء الاصطناعي — يدعم الاستفسارات عن الشحن والفواتير وسياسات الشركة" />
+
+    <!-- Google Font: Tajawal — أفضل خط عربي للتطبيقات -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+
+    <!-- ملف التصميم الرئيسي -->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <!-- ====================================================
+         الشريط العلوي — رأس الصفحة
+    ==================================================== -->
+    <header class="app-header">
+        <div class="header-brand">
+            <div class="brand-icon">🤖</div>
+            <div class="brand-text">
+                <h1>GCC Customer Support AI</h1>
+                <span class="brand-subtitle">نظام دعم العملاء متعدد الوكلاء</span>
+            </div>
+        </div>
+
+        <!-- مؤشر حالة الاتصال بالـ Backend -->
+        <div class="header-actions">
+            <div class="status-indicator" id="connectionStatus">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">جاري التحقق...</span>
+            </div>
+            <button class="btn btn-outline" id="healthCheckBtn" onclick="checkHealth()">
+                🔄 فحص الاتصال
+            </button>
+        </div>
+    </header>
+
+    <!-- ====================================================
+         المحتوى الرئيسي — ثلاثة أعمدة
+    ==================================================== -->
+    <main class="app-layout">
+
+        <!-- ================================================
+             العمود الأيمن: إعدادات الجلسة
+        ================================================ -->
+        <aside class="sidebar-right" id="settingsSidebar">
+            <div class="sidebar-section">
+                <h2 class="sidebar-title">
+                    <span class="sidebar-icon">⚙️</span>
+                    إعدادات الجلسة
+                </h2>
+
+                <!-- اختيار العميل -->
+                <div class="form-group">
+                    <label for="customerId">رقم العميل</label>
+                    <select id="customerId" class="form-select" onchange="onCustomerChange()">
+                        <option value="CUST-1001">CUST-1001 — عميل قياسي (طلب 5501)</option>
+                        <option value="CUST-1002">CUST-1002 — عميل قياسي (طلب 5502)</option>
+                        <option value="CUST-1003">CUST-1003 — عميل قياسي (طلب 5503)</option>
+                    </select>
+                </div>
+
+                <!-- مستوى الخدمة -->
+                <div class="form-group">
+                    <label for="accountTier">مستوى الخدمة</label>
+                    <select id="accountTier" class="form-select">
+                        <option value="standard">Standard — قياسي</option>
+                        <option value="VIP">VIP — مميز</option>
+                    </select>
+                </div>
+
+                <!-- معرّف الجلسة -->
+                <div class="form-group">
+                    <label for="threadId">معرّف الجلسة</label>
+                    <div class="input-with-btn">
+                        <input type="text" id="threadId" class="form-input" readonly />
+                        <button class="btn btn-sm btn-ghost" onclick="regenerateSession()" title="جلسة جديدة">🔀</button>
+                    </div>
+                </div>
+
+                <!-- رقم التذكرة (اختياري) -->
+                <div class="form-group">
+                    <label for="ticketId">رقم التذكرة <span class="optional-label">(اختياري)</span></label>
+                    <input type="text" id="ticketId" class="form-input" placeholder="مثال: TICKET-5501" />
+                </div>
+
+                <button class="btn btn-primary w-full" onclick="startNewSession()">
+                    🆕 بدء جلسة جديدة
+                </button>
+            </div>
+
+            <!-- ----------------------------------------
+                 بيانات العملاء التجريبية — للطلاب
+            ---------------------------------------- -->
+            <div class="sidebar-section demo-section">
+                <h2 class="sidebar-title">
+                    <span class="sidebar-icon">📋</span>
+                    بيانات تجريبية للطلاب
+                </h2>
+                <div class="demo-table">
+                    <div class="demo-row demo-header">
+                        <span>العميل</span>
+                        <span>الطلب</span>
+                        <span>الحالة</span>
+                    </div>
+                    <div class="demo-row">
+                        <span class="demo-tag">CUST-1001</span>
+                        <span class="demo-tag">5501</span>
+                        <span class="status-badge shipped">شحن</span>
+                    </div>
+                    <div class="demo-row">
+                        <span class="demo-tag">CUST-1002</span>
+                        <span class="demo-tag">5502</span>
+                        <span class="status-badge delivered">مُسلَّم</span>
+                    </div>
+                    <div class="demo-row">
+                        <span class="demo-tag">CUST-1003</span>
+                        <span class="demo-tag">5503</span>
+                        <span class="status-badge processing">معالجة</span>
+                    </div>
+                    <div class="demo-row">
+                        <span class="demo-tag">CUST-1001</span>
+                        <span class="demo-tag">INV-5501</span>
+                        <span class="status-badge paid">مدفوع</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ----------------------------------------
+                 إحصائيات الجلسة
+            ---------------------------------------- -->
+            <div class="sidebar-section">
+                <h2 class="sidebar-title">
+                    <span class="sidebar-icon">📊</span>
+                    إحصائيات الجلسة
+                </h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statMessages">0</div>
+                        <div class="stat-label">رسائل</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statDuration">0s</div>
+                        <div class="stat-label">مدة الاستجابة</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================================================
+             العمود الأوسط: منطقة الدردشة
+        ================================================ -->
+        <section class="chat-area">
+
+            <!-- رأس منطقة الدردشة -->
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <span class="chat-header-customer" id="chatHeaderCustomer">CUST-1001</span>
+                    <span class="chat-header-tier" id="chatHeaderTier">Standard</span>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="clearChat()" title="مسح المحادثة">
+                    🗑️ مسح
+                </button>
+            </div>
+
+            <!-- نافذة الرسائل -->
+            <div class="messages-window" id="messagesWindow">
+                <!-- رسالة الترحيب -->
+                <div class="welcome-state" id="welcomeState">
+                    <div class="welcome-icon">🤖</div>
+                    <h3>مرحباً بك في نظام دعم العملاء</h3>
+                    <p>اكتب استفسارك أو اختر أحد الأمثلة أدناه للبدء</p>
+                    <p class="welcome-hint">الوكلاء المتاحون: <strong>الشحن · الفواتير · سياسات الشركة · التحويل لموظف</strong></p>
+                </div>
+            </div>
+
+            <!-- بطاقة بيانات العميل — تظهر عند استلام customer في الرد -->
+            <div class="info-card customer-card hidden" id="customerCard">
+                <div class="info-card-header">
+                    <span>👤 بيانات العميل</span>
+                    <button class="btn-close-card" onclick="closeCard('customerCard')">✕</button>
+                </div>
+                <div class="info-card-body" id="customerCardBody"></div>
+            </div>
+
+            <!-- بطاقة تفاصيل الشكوى — تظهر عند وجود complaint في الرد -->
+            <div class="info-card complaint-card hidden" id="complaintCard">
+                <div class="info-card-header">
+                    <span>📋 تفاصيل الشكوى</span>
+                    <button class="btn-close-card" onclick="closeCard('complaintCard')">✕</button>
+                </div>
+                <div class="info-card-body" id="complaintCardBody"></div>
+            </div>
+
+            <!-- أمثلة سريعة جاهزة للضغط -->
+            <div class="quick-examples" id="quickExamples">
+                <p class="quick-label">💡 جرّب مثالاً:</p>
+                <div class="examples-grid">
+                    <button class="example-btn" onclick="useExample(this.dataset.msg)"
+                        data-msg="طلبي 5501 تأخر في التوصيل، وين وصل؟">
+                        📦 تتبع طلب 5501
+                    </button>
+                    <button class="example-btn" onclick="useExample(this.dataset.msg)"
+                        data-msg="أبي أعرف حالة الفاتورة INV-5501">
+                        💰 فاتورة INV-5501
+                    </button>
+                    <button class="example-btn" onclick="useExample(this.dataset.msg)"
+                        data-msg="ما هي سياسة الاسترجاع عندكم؟">
+                        📜 سياسة الاسترجاع
+                    </button>
+                    <button class="example-btn" onclick="useExample(this.dataset.msg)"
+                        data-msg="أبي أتكلم مع موظف بشري">
+                        🙋 تحويل لموظف
+                    </button>
+                    <button class="example-btn" onclick="useExample(this.dataset.msg)"
+                        data-msg="طلبي 5503 امتى يوصل؟">
+                        🔄 طلب قيد المعالجة
+                    </button>
+                    <button class="example-btn" onclick="useExample(this.dataset.msg)"
+                        data-msg="كيف أغير عنوان التوصيل لطلبي؟">
+                        📍 تغيير العنوان
+                    </button>
+                </div>
+            </div>
+
+            <!-- حقل الإدخال -->
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <textarea
+                        id="messageInput"
+                        class="message-textarea"
+                        placeholder="اكتب رسالتك هنا... (اضغط Enter للإرسال)"
+                        rows="1"
+                        onkeydown="handleKeyDown(event)"
+                        oninput="autoResize(this)"
+                    ></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <span class="send-icon">➤</span>
+                    </button>
+                </div>
+                <div class="input-hint">
+                    <span>Enter للإرسال · Shift+Enter لسطر جديد</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================
+             العمود الأيسر: اللوحة التعليمية
+        ================================================ -->
+        <aside class="sidebar-left" id="learningPanel">
+            <div class="sidebar-section">
+                <h2 class="sidebar-title">
+                    <span class="sidebar-icon">🎓</span>
+                    اللوحة التعليمية
+                </h2>
+                <p class="learning-desc">تتبّع الوكيل المسؤول عن كل رد وفهم دوره في النظام</p>
+
+                <!-- الوكيل النشط الحالي -->
+                <div class="active-agent-card" id="activeAgentCard">
+                    <div class="agent-icon" id="agentIcon">🔀</div>
+                    <div class="agent-info">
+                        <div class="agent-name" id="agentName">في انتظار الرسالة الأولى</div>
+                        <div class="agent-role" id="agentRole">لم يتم استدعاء أي وكيل بعد</div>
+                    </div>
+                </div>
+
+                <!-- وصف الوكلاء -->
+                <div class="agents-legend">
+                    <h3 class="legend-title">دليل الوكلاء</h3>
+                    <div class="legend-item" data-agent="router">
+                        <div class="legend-dot dot-router"></div>
+                        <div class="legend-text">
+                            <strong>Router — الموجّه</strong>
+                            <p>يحلل الرسالة ويُحدد أي وكيل متخصص يعالجها</p>
+                        </div>
+                    </div>
+                    <div class="legend-item" data-agent="shipping">
+                        <div class="legend-dot dot-shipping"></div>
+                        <div class="legend-text">
+                            <strong>Shipping — الشحن</strong>
+                            <p>يتتبع الطلبات ويبحث في قاعدة بيانات التوصيل</p>
+                        </div>
+                    </div>
+                    <div class="legend-item" data-agent="billing">
+                        <div class="legend-dot dot-billing"></div>
+                        <div class="legend-text">
+                            <strong>Billing — الفواتير</strong>
+                            <p>يعرض تفاصيل الفواتير وطرق الدفع</p>
+                        </div>
+                    </div>
+                    <div class="legend-item" data-agent="rag">
+                        <div class="legend-dot dot-rag"></div>
+                        <div class="legend-text">
+                            <strong>RAG — قاعدة المعرفة</strong>
+                            <p>يجيب على أسئلة السياسات والشروط من ChromaDB</p>
+                        </div>
+                    </div>
+                    <div class="legend-item" data-agent="human">
+                        <div class="legend-dot dot-human"></div>
+                        <div class="legend-text">
+                            <strong>Human Handoff — التحويل</strong>
+                            <p>يحول الطلب لموظف بشري عند الحاجة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- سجل الوكلاء المستدعاة -->
+            <div class="sidebar-section">
+                <h2 class="sidebar-title">
+                    <span class="sidebar-icon">📜</span>
+                    سجل الاستدعاءات
+                </h2>
+                <div class="agent-log" id="agentLog">
+                    <div class="log-empty">لم تبدأ المحادثة بعد</div>
+                </div>
+            </div>
+
+            <!-- زر إعادة التهيئة -->
+            <div class="sidebar-section">
+                <h2 class="sidebar-title">
+                    <span class="sidebar-icon">🗄️</span>
+                    قاعدة المعرفة
+                </h2>
+                <p class="learning-desc">ChromaDB مع سياسات الشركة والأسئلة الشائعة</p>
+                <button class="btn btn-outline w-full" onclick="reindexKB()">
+                    ♻️ إعادة تهيئة قاعدة المعرفة
+                </button>
+                <div id="ingestStatus" class="ingest-status hidden"></div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- ====================================================
+         JavaScript — منطق التطبيق الكامل
+    ==================================================== -->
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+    "cSpell.words": [
+        "ainvoke",
+        "checkpointer",
+        "dotenv",
+        "genai",
+        "groq",
+        "ipykernel",
+        "langchain",
+        "langgraph",
+        "psycopg",
+        "pydantic",
+        "scikit"
+    ],
+    "postman.settings.dotenv-detection-notification-visibility": false
+}

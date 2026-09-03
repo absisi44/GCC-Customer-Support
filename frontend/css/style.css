@@ -1,0 +1,936 @@
+/* ======================================================
+   GCC Customer Support AI — التصميم الرئيسي
+   Dark Mode + RTL + Tajawal Font
+   ====================================================== */
+
+/* ======================================================
+   1. متغيرات التصميم — Design Tokens
+   ====================================================== */
+:root {
+    /* الألوان الرئيسية */
+    --color-bg-base:       #0d0f1a;   /* خلفية التطبيق الرئيسية */
+    --color-bg-surface:    #13172b;   /* خلفية البطاقات */
+    --color-bg-elevated:   #1a2040;   /* خلفية العناصر المرتفعة */
+    --color-bg-input:      #1e2542;   /* خلفية حقول الإدخال */
+
+    /* تدرج الـ Accent */
+    --color-accent-start:  #6366f1;   /* بنفسجي */
+    --color-accent-end:    #8b5cf6;   /* بنفسجي فاتح */
+    --color-accent:        #6366f1;
+    --color-accent-glow:   rgba(99, 102, 241, 0.25);
+
+    /* تدرج ثانوي للنجاح */
+    --color-success-start: #10b981;
+    --color-success-end:   #059669;
+    --color-success:       #10b981;
+
+    /* ألوان الحالة */
+    --color-warning:       #f59e0b;
+    --color-error:         #ef4444;
+    --color-info:          #3b82f6;
+
+    /* النصوص */
+    --color-text-primary:  #f0f2ff;
+    --color-text-secondary:#8b9cc8;
+    --color-text-muted:    #4a5580;
+
+    /* الحدود */
+    --color-border:        rgba(99, 102, 241, 0.15);
+    --color-border-hover:  rgba(99, 102, 241, 0.4);
+
+    /* الخط */
+    --font-family:         'Tajawal', sans-serif;
+
+    /* الحجم والمسافات */
+    --header-height:       64px;
+    --sidebar-right-width: 280px;
+    --sidebar-left-width:  300px;
+    --border-radius-sm:    8px;
+    --border-radius-md:    14px;
+    --border-radius-lg:    20px;
+    --border-radius-xl:    28px;
+
+    /* الظلال */
+    --shadow-sm:  0 2px 8px rgba(0,0,0,0.3);
+    --shadow-md:  0 4px 20px rgba(0,0,0,0.4);
+    --shadow-lg:  0 8px 40px rgba(0,0,0,0.5);
+    --shadow-accent: 0 0 20px var(--color-accent-glow);
+
+    /* الانتقالات */
+    --transition-fast:  0.15s ease;
+    --transition-base:  0.25s ease;
+    --transition-slow:  0.4s ease;
+}
+
+/* ======================================================
+   2. إعادة الضبط والأساسيات — Reset & Base
+   ====================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    direction: rtl;
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* scrollbar مخصص */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-hover); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+/* ======================================================
+   3. رأس الصفحة — Header
+   ====================================================== */
+.app-header {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(19, 23, 43, 0.95);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-shrink: 0;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: var(--shadow-accent);
+}
+
+.brand-text h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #c7d2fe, #a5b4fc, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    font-size: 0.72rem;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* مؤشر حالة الاتصال */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-elevated);
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--color-border);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-text-muted);
+    transition: background var(--transition-base);
+}
+
+.status-dot.online  { background: var(--color-success); box-shadow: 0 0 8px var(--color-success); }
+.status-dot.offline { background: var(--color-error); }
+.status-dot.checking {
+    background: var(--color-warning);
+    animation: pulse-dot 1s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+}
+
+/* ======================================================
+   4. تخطيط التطبيق — Layout
+   ====================================================== */
+.app-layout {
+    display: grid;
+    grid-template-columns: var(--sidebar-right-width) 1fr var(--sidebar-left-width);
+    grid-template-areas: "sidebar-right chat-area sidebar-left";
+    height: calc(100vh - var(--header-height));
+    overflow: hidden;
+}
+
+/* ======================================================
+   5. الشريط الجانبي — Sidebar
+   ====================================================== */
+.sidebar-right {
+    grid-area: sidebar-right;
+    overflow-y: auto;
+    border-left: 1px solid var(--color-border);
+    background: var(--color-bg-surface);
+}
+
+.sidebar-left {
+    grid-area: sidebar-left;
+    overflow-y: auto;
+    border-right: 1px solid var(--color-border);
+    background: var(--color-bg-surface);
+}
+
+.sidebar-section {
+    padding: 20px 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.sidebar-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.sidebar-icon { font-size: 1rem; }
+
+/* ======================================================
+   6. عناصر النموذج — Form Elements
+   ====================================================== */
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: 6px;
+}
+
+.optional-label {
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    direction: rtl;
+}
+
+.form-input:focus,
+.form-select:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+}
+
+.form-select option {
+    background: var(--color-bg-elevated);
+    color: var(--color-text-primary);
+}
+
+.input-with-btn {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.input-with-btn .form-input { flex: 1; }
+
+/* ======================================================
+   7. الأزرار — Buttons
+   ====================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: var(--border-radius-sm);
+    border: none;
+    font-family: var(--font-family);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+    color: white;
+    box-shadow: var(--shadow-accent);
+}
+.btn-primary:hover { filter: brightness(1.15); box-shadow: 0 0 28px var(--color-accent-glow); }
+
+.btn-outline {
+    background: transparent;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+}
+.btn-outline:hover { background: var(--color-accent-glow); }
+
+.btn-ghost {
+    background: transparent;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+}
+.btn-ghost:hover { color: var(--color-text-primary); border-color: var(--color-border-hover); }
+
+.btn-sm { padding: 5px 10px; font-size: 0.78rem; }
+.w-full { width: 100%; margin-top: 4px; }
+
+/* ======================================================
+   8. بطاقة الديموكراسي — Demo Table
+   ====================================================== */
+.demo-section { background: rgba(99, 102, 241, 0.04); }
+
+.demo-table { display: flex; flex-direction: column; gap: 6px; }
+
+.demo-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+    align-items: center;
+}
+
+.demo-header { font-size: 0.7rem; color: var(--color-text-muted); font-weight: 600; }
+
+.demo-tag {
+    font-size: 0.72rem;
+    background: var(--color-bg-elevated);
+    padding: 3px 7px;
+    border-radius: 4px;
+    color: var(--color-text-secondary);
+    font-family: monospace;
+    text-align: center;
+}
+
+.status-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 99px;
+    text-align: center;
+}
+.status-badge.shipped    { background: rgba(59,130,246,0.2); color: #60a5fa; }
+.status-badge.delivered  { background: rgba(16,185,129,0.2); color: #34d399; }
+.status-badge.processing { background: rgba(245,158,11,0.2); color: #fbbf24; }
+.status-badge.paid       { background: rgba(16,185,129,0.2); color: #34d399; }
+
+/* ======================================================
+   9. إحصائيات الجلسة — Stats
+   ====================================================== */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.stat-card {
+    background: var(--color-bg-elevated);
+    border-radius: var(--border-radius-sm);
+    padding: 12px;
+    text-align: center;
+    border: 1px solid var(--color-border);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-accent);
+}
+
+.stat-label { font-size: 0.72rem; color: var(--color-text-muted); margin-top: 2px; }
+
+/* ======================================================
+   10. منطقة الدردشة — Chat Area
+   ====================================================== */
+.chat-area {
+    grid-area: chat-area;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* رأس منطقة الدردشة */
+.chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--color-border);
+    background: rgba(26, 32, 64, 0.6);
+    backdrop-filter: blur(8px);
+    flex-shrink: 0;
+}
+
+.chat-header-info { display: flex; align-items: center; gap: 10px; }
+
+.chat-header-customer {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-family: monospace;
+}
+
+.chat-header-tier {
+    font-size: 0.72rem;
+    padding: 2px 10px;
+    border-radius: 99px;
+    background: var(--color-accent-glow);
+    border: 1px solid var(--color-accent);
+    color: #a5b4fc;
+}
+
+/* نافذة الرسائل */
+.messages-window {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scroll-behavior: smooth;
+}
+
+/* حالة الترحيب */
+.welcome-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 12px;
+    color: var(--color-text-secondary);
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.welcome-icon { font-size: 3.5rem; animation: float 3s ease-in-out infinite; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-10px); }
+}
+
+.welcome-state h3 { font-size: 1.2rem; font-weight: 700; color: var(--color-text-primary); }
+.welcome-state p  { font-size: 0.85rem; line-height: 1.6; }
+.welcome-hint     { font-size: 0.78rem; color: var(--color-text-muted); }
+
+/* ======================================================
+   11. فقاعات الرسائل — Message Bubbles
+   ====================================================== */
+
+/* حاوية الرسالة */
+.message-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* رسائل المستخدم — جانب يمين (RTL = اليمين) */
+.message-wrapper.user {
+    flex-direction: row;           /* الأفاتار يسار الفقاعة */
+    justify-content: flex-start;   /* في RTL = يمين الشاشة */
+}
+
+/* رسائل الوكيل — جانب يسار (RTL = اليسار) */
+.message-wrapper.agent {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+}
+
+/* الأفاتار */
+.message-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.message-wrapper.user  .message-avatar { background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end)); }
+.message-wrapper.agent .message-avatar { background: var(--color-bg-elevated); border: 1px solid var(--color-border); }
+
+/* فقاعة الرسالة */
+.message-bubble {
+    max-width: 72%;
+    padding: 12px 16px;
+    border-radius: var(--border-radius-md);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    position: relative;
+}
+
+.message-wrapper.user .message-bubble {
+    background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.message-wrapper.agent .message-bubble {
+    background: var(--color-bg-elevated);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-bottom-left-radius: 4px;
+}
+
+/* شارة الوكيل النشط داخل الفقاعة */
+.agent-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+    margin-bottom: 8px;
+}
+
+.agent-badge.router   { background: rgba(99,102,241,0.2); color: #a5b4fc; }
+.agent-badge.shipping { background: rgba(59,130,246,0.2); color: #60a5fa; }
+.agent-badge.billing  { background: rgba(245,158,11,0.2); color: #fbbf24; }
+.agent-badge.rag      { background: rgba(16,185,129,0.2); color: #34d399; }
+.agent-badge.human    { background: rgba(239,68,68,0.2);  color: #f87171; }
+.agent-badge.technical { background: rgba(168,85,247,0.2); color: #c084fc; }
+
+/* وقت الرسالة */
+.message-time {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    margin-top: 5px;
+    text-align: left;
+}
+.message-wrapper.user .message-time { color: rgba(255,255,255,0.6); text-align: right; }
+
+/* مؤشر التحميل (Typing indicator) */
+.typing-indicator .message-bubble {
+    padding: 14px 20px;
+}
+
+.typing-dots {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.typing-dots span {
+    width: 7px;
+    height: 7px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    animation: typingBounce 1.2s infinite;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+    40%           { transform: scale(1.2); opacity: 1; }
+}
+
+/* ======================================================
+   12. بطاقات المعلومات — Info Cards
+   ====================================================== */
+.info-card {
+    margin: 0 20px 8px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    animation: slideIn 0.3s ease;
+    flex-shrink: 0;
+}
+
+.info-card.hidden { display: none; }
+
+.customer-card { border-color: rgba(99,102,241,0.4); }
+.complaint-card { border-color: rgba(245,158,11,0.4); }
+
+.info-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.customer-card .info-card-header  { background: rgba(99,102,241,0.15); }
+.complaint-card .info-card-header { background: rgba(245,158,11,0.15); }
+
+.btn-close-card {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.btn-close-card:hover { background: var(--color-bg-elevated); color: var(--color-text-primary); }
+
+.info-card-body {
+    padding: 12px 14px;
+    background: var(--color-bg-surface);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.info-item { display: flex; flex-direction: column; gap: 2px; }
+.info-item .info-label { font-size: 0.68rem; color: var(--color-text-muted); }
+.info-item .info-value { font-size: 0.82rem; font-weight: 500; color: var(--color-text-primary); }
+.info-item.full-width { grid-column: 1 / -1; }
+
+/* ======================================================
+   13. الأمثلة السريعة — Quick Examples
+   ====================================================== */
+.quick-examples {
+    padding: 10px 20px;
+    flex-shrink: 0;
+    border-top: 1px solid var(--color-border);
+    background: rgba(13, 15, 26, 0.5);
+}
+
+.quick-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+}
+
+.examples-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.example-btn {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 99px;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family);
+    font-size: 0.75rem;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.example-btn:hover {
+    background: var(--color-accent-glow);
+    border-color: var(--color-accent);
+    color: #c7d2fe;
+    transform: translateY(-1px);
+}
+
+/* ======================================================
+   14. حقل الإدخال — Input Area
+   ====================================================== */
+.input-area {
+    padding: 14px 20px 16px;
+    background: var(--color-bg-surface);
+    border-top: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    background: var(--color-bg-input);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 10px 14px;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input-wrapper:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 4px var(--color-accent-glow);
+}
+
+.message-textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    font-size: 0.92rem;
+    resize: none;
+    line-height: 1.5;
+    max-height: 120px;
+    min-height: 24px;
+    direction: rtl;
+}
+
+.message-textarea::placeholder { color: var(--color-text-muted); }
+
+.send-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-accent);
+}
+
+.send-btn:hover:not(:disabled) {
+    filter: brightness(1.2);
+    transform: scale(1.08);
+}
+
+.send-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.send-icon { font-size: 1rem; }
+
+.input-hint {
+    font-size: 0.68rem;
+    color: var(--color-text-muted);
+    margin-top: 6px;
+    text-align: center;
+}
+
+/* ======================================================
+   15. اللوحة التعليمية — Learning Panel
+   ====================================================== */
+.learning-desc {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.active-agent-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-hover);
+    border-radius: var(--border-radius-md);
+    padding: 14px;
+    margin-bottom: 16px;
+    transition: all var(--transition-base);
+}
+
+.agent-icon {
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-base);
+    border-radius: var(--border-radius-sm);
+    flex-shrink: 0;
+}
+
+.agent-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.agent-role {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin-top: 3px;
+    line-height: 1.4;
+}
+
+/* دليل الوكلاء */
+.agents-legend { display: flex; flex-direction: column; gap: 10px; }
+
+.legend-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--border-radius-sm);
+    transition: background var(--transition-fast);
+    cursor: default;
+}
+
+.legend-item:hover       { background: var(--color-bg-elevated); }
+.legend-item.active-item { background: var(--color-bg-elevated); border: 1px solid var(--color-border-hover); }
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.dot-router   { background: #6366f1; box-shadow: 0 0 6px #6366f1; }
+.dot-shipping { background: #3b82f6; box-shadow: 0 0 6px #3b82f6; }
+.dot-billing  { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
+.dot-rag      { background: #10b981; box-shadow: 0 0 6px #10b981; }
+.dot-human    { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+
+.legend-text strong { font-size: 0.8rem; font-weight: 600; color: var(--color-text-primary); }
+.legend-text p      { font-size: 0.72rem; color: var(--color-text-muted); margin-top: 2px; line-height: 1.4; }
+
+/* سجل الاستدعاءات */
+.agent-log {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.log-empty { font-size: 0.78rem; color: var(--color-text-muted); text-align: center; padding: 12px; }
+
+.log-entry {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: var(--color-bg-elevated);
+    border-radius: var(--border-radius-sm);
+    border-right: 3px solid var(--color-border);
+    font-size: 0.75rem;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.log-entry.router   { border-right-color: #6366f1; }
+.log-entry.shipping { border-right-color: #3b82f6; }
+.log-entry.billing  { border-right-color: #f59e0b; }
+.log-entry.rag      { border-right-color: #10b981; }
+.log-entry.human    { border-right-color: #ef4444; }
+
+.log-entry .log-num  { color: var(--color-text-muted); font-size: 0.68rem; }
+.log-entry .log-name { font-weight: 600; color: var(--color-text-primary); }
+.log-entry .log-time { color: var(--color-text-muted); margin-right: auto; font-size: 0.68rem; }
+
+/* حالة الـ Ingest */
+.ingest-status {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.8rem;
+    border: 1px solid;
+}
+
+.ingest-status.success { background: rgba(16,185,129,0.1); border-color: var(--color-success); color: var(--color-success); }
+.ingest-status.error   { background: rgba(239,68,68,0.1);  border-color: var(--color-error);   color: var(--color-error); }
+.ingest-status.hidden  { display: none; }
+
+/* ======================================================
+   16. تأثيرات الحركة — Animations
+   ====================================================== */
+
+/* تأثير الوميض للوكيل النشط */
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 8px var(--color-accent-glow); }
+    50%       { box-shadow: 0 0 20px var(--color-accent-glow), 0 0 40px rgba(99,102,241,0.1); }
+}
+
+.active-agent-card.highlight {
+    animation: glowPulse 1.5s ease 3;
+}
+
+/* ======================================================
+   17. متجاوب — Responsive
+   ====================================================== */
+@media (max-width: 1100px) {
+    :root {
+        --sidebar-right-width: 240px;
+        --sidebar-left-width:  240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-layout {
+        grid-template-columns: 1fr;
+        grid-template-areas: "chat-area";
+    }
+    .sidebar-right, .sidebar-left { display: none; }
+
+    .examples-grid { overflow-x: auto; flex-wrap: nowrap; }
+}

@@ -1,0 +1,142 @@
+[
+  {
+    "test_id": "TEST-01",
+    "query_type": "standard",
+    "query": "كم رسوم الشحن السريع في السعودية؟",
+    "expected_source_id": "FAQ-001",
+    "expected_chunk_keyword": "45"
+  },
+  {
+    "test_id": "TEST-02",
+    "query_type": "gulf_dialect",
+    "query": "كم ياخذ التوصيل للرياض؟",
+    "expected_source_id": "FAQ-002",
+    "expected_chunk_keyword": "الرياض"
+  },
+  {
+    "test_id": "TEST-03",
+    "query_type": "standard",
+    "query": "كيف يمكنني إرجاع منتج قمت بشرائه؟",
+    "expected_source_id": "FAQ-003",
+    "expected_chunk_keyword": "بوليصة"
+  },
+  {
+    "test_id": "TEST-04",
+    "query_type": "gulf_dialect",
+    "query": "كيف أرجع الشغلة اللي اشتريتها؟",
+    "expected_source_id": "FAQ-003",
+    "expected_chunk_keyword": "إرجاع"
+  },
+  {
+    "test_id": "TEST-05",
+    "query_type": "gulf_dialect",
+    "query": "ابا ارجع القطعه شسوي بالظبط",
+    "expected_source_id": "FAQ-003",
+    "expected_chunk_keyword": "إرجاع"
+  },
+  {
+    "test_id": "TEST-06",
+    "query_type": "gulf_dialect",
+    "query": "اذا رجعت الغرض اللي دفعته بتقسيط تمارا بيوقفون الاقساط الباقية؟",
+    "expected_source_id": "FAQ-004",
+    "expected_chunk_keyword": "تمارا"
+  },
+  {
+    "test_id": "TEST-07",
+    "query_type": "standard",
+    "query": "هل تلغى أقساط تابي عند إرجاع الطلب؟",
+    "expected_source_id": "FAQ-004",
+    "expected_chunk_keyword": "تابي"
+  },
+  {
+    "test_id": "TEST-08",
+    "query_type": "standard",
+    "query": "كيف أقوم بإلغاء طلبي؟",
+    "expected_source_id": "FAQ-005",
+    "expected_chunk_keyword": "إلغاء"
+  },
+  {
+    "test_id": "TEST-09",
+    "query_type": "gulf_dialect",
+    "query": "اقدر اكنسل الطلب الحين؟",
+    "expected_source_id": "FAQ-005",
+    "expected_chunk_keyword": "إلغاء"
+  },
+  {
+    "test_id": "TEST-10",
+    "query_type": "standard",
+    "query": "ما هو الحد الأدنى للحصول على شحن مجاني؟",
+    "expected_source_id": "FAQ-006",
+    "expected_chunk_keyword": "200"
+  },
+  {
+    "test_id": "TEST-11",
+    "query_type": "standard",
+    "query": "كم يوم معي حتى أرجع المنتج؟",
+    "expected_source_id": "FAQ-007",
+    "expected_chunk_keyword": "14"
+  },
+  {
+    "test_id": "TEST-12",
+    "query_type": "gulf_dialect",
+    "query": "وصلني غرض مكسور ومخروش وش الحل؟",
+    "expected_source_id": "FAQ-008",
+    "expected_chunk_keyword": "تالف"
+  },
+  {
+    "test_id": "TEST-13",
+    "query_type": "standard",
+    "query": "هل تقبلون الدفع عن طريق أبل باي ومدى؟",
+    "expected_source_id": "FAQ-009",
+    "expected_chunk_keyword": "مدى"
+  },
+  {
+    "test_id": "TEST-14",
+    "query_type": "gulf_dialect",
+    "query": "اقدر ادفع عند الباب كاش وكم ياخذون زيادة؟",
+    "expected_source_id": "FAQ-010",
+    "expected_chunk_keyword": "15"
+  },
+  {
+    "test_id": "TEST-15",
+    "query_type": "standard",
+    "query": "هل يشمل التوصيل دولة الكويت وسلطنة عمان؟",
+    "expected_source_id": "FAQ-011",
+    "expected_chunk_keyword": "الكويت"
+  },
+  {
+    "test_id": "TEST-16",
+    "query_type": "standard",
+    "query": "هل يمكنني إرجاع عطر تم فتح غلافه؟",
+    "expected_source_id": "FAQ-012",
+    "expected_chunk_keyword": "العطور"
+  },
+  {
+    "test_id": "TEST-17",
+    "query_type": "gulf_dialect",
+    "query": "وين وصلت شحنتي وكيف اتابعها؟",
+    "expected_source_id": "FAQ-013",
+    "expected_chunk_keyword": "تتبع"
+  },
+  {
+    "test_id": "TEST-18",
+    "query_type": "standard",
+    "query": "كيف أغير عنوان التوصيل بعد تأكيد الطلب؟",
+    "expected_source_id": "FAQ-014",
+    "expected_chunk_keyword": "العنوان"
+  },
+  {
+    "test_id": "TEST-19",
+    "query_type": "standard",
+    "query": "متى ترجع الفلوس لبطاقتي بعد الإرجاع؟",
+    "expected_source_id": "FAQ-015",
+    "expected_chunk_keyword": "أيام"
+  },
+  {
+    "test_id": "TEST-20",
+    "query_type": "out_of_scope",
+    "query": "هل يمكنني الحصول على خصم 50%؟",
+    "expected_source_id": "COMPANY_POLICY",
+    "expected_chunk_keyword": "خصم"
+  }
+]
