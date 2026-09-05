@@ -18,11 +18,11 @@ class GetGroqLLM:
                 raise ValueError("GROQ_API_KEY not found in environment variables.")
             self.groq_api_key = raw_key.strip().splitlines()[0].strip()
             os.environ["GROQ_API_KEY"] = self.groq_api_key
+            model_name = os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
             llm = ChatGroq(
                 groq_api_key=self.groq_api_key,
-                model_name="qwen/qwen3.6-27b",
-                max_tokens=600,
-                model_kwargs={"extra_body": {"reasoning_format": "hidden"}},
+                model_name=model_name,
+                max_tokens=700,
             )
             return llm 
         except Exception as e:

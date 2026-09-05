@@ -39,9 +39,14 @@ const state = {
 const AGENT_MAP = {
     "router":              { icon: "🔀", nameAr: "الموجّه",            role: "يحلل الرسالة ويُحدد الوكيل المناسب",   cls: "router"   },
     "shipping_executor":   { icon: "📦", nameAr: "وكيل الشحن",         role: "يتتبع الطلبات والشحنات",               cls: "shipping" },
+    "shipping":            { icon: "📦", nameAr: "وكيل الشحن",         role: "يتتبع الطلبات والشحنات",               cls: "shipping" },
     "billing_executor":    { icon: "💰", nameAr: "وكيل الفواتير",      role: "يعرض تفاصيل الفواتير والمدفوعات",      cls: "billing"  },
+    "billing":             { icon: "💰", nameAr: "وكيل الفواتير",      role: "يعرض تفاصيل الفواتير والمدفوعات",      cls: "billing"  },
     "rag_node":            { icon: "📚", nameAr: "قاعدة المعرفة (RAG)", role: "يجيب من سياسات الشركة في ChromaDB",    cls: "rag"      },
+    "rag":                 { icon: "📚", nameAr: "قاعدة المعرفة (RAG)", role: "يجيب من سياسات الشركة في ChromaDB",    cls: "rag"      },
+    "policy":              { icon: "📚", nameAr: "قاعدة المعرفة (RAG)", role: "يجيب من سياسات الشركة في ChromaDB",    cls: "rag"      },
     "technical_handler":   { icon: "🔧", nameAr: "الدعم التقني",        role: "يعالج المشكلات التقنية",               cls: "technical"},
+    "technical":           { icon: "🔧", nameAr: "الدعم التقني",        role: "يعالج المشكلات التقنية",               cls: "technical"},
     "human_handoff":       { icon: "🙋", nameAr: "التحويل لموظف",      role: "يحوّل المحادثة لموظف بشري",            cls: "human"    },
 };
 

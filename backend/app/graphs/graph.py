@@ -169,7 +169,15 @@ async def run_support_pipeline(
     answer_text = last_message.content if hasattr(last_message, "content") else str(last_message)
     if isinstance(answer_text, str):
         import re
-        answer_text = re.sub(r"<think>.*?(?:</think>|$)", "", answer_text, flags=re.DOTALL).strip()
+        if "<think>" in answer_text and "</think>" in answer_text:
+            answer_text = re.sub(r"<think>.*?</think>", "", answer_text, flags=re.DOTALL).strip()
+        elif "<think>" in answer_text:
+            answer_text = re.sub(r"<think>.*?(?:</think>|$)", "", answer_text, flags=re.DOTALL).strip()
+        else:
+            answer_text = answer_text.strip()
+
+        if not answer_text:
+            answer_text = "عذراً، لم أتمكن من استرجاع إجابة كافية. يرجى مراجعة صفحة المساعدة أو التواصل مع خدمة العملاء."
 
     return {
         "query": query,

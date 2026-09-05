@@ -83,7 +83,7 @@ Retrieved company knowledge:
         ])
     except Exception as e:
         openai_key = os.getenv("OPENAI_API_KEY")
-        if openai_key and ("rate_limit" in str(e).lower() or "429" in str(e)):
+        if openai_key and ("rate_limit" in str(e).lower() or "429" in str(e) or "tokens" in str(e).lower()):
             print(f"⚠️ Groq rate limit reached ({e}). Automatically falling back to OpenAI gpt-4o-mini...")
             fallback_llm = ChatOpenAI(
                 model="gpt-4o-mini",
@@ -97,12 +97,37 @@ Retrieved company knowledge:
         else:
             raise e
 
-    # Clean <think> tags if model is a reasoning model (e.g. Qwen / DeepSeek)
-    if hasattr(response, "content") and isinstance(response.content, str):
+    # Clean <think> tags if model is a reasoning model
+    content_str = response.content if hasattr(response, "content") else str(response)
+    if isinstance(content_str, str):
         import re
-        cleaned_content = re.sub(r"<think>.*?(?:</think>|$)", "", response.content, flags=re.DOTALL).strip()
-        response = AIMessage(content=cleaned_content)
+        if "<think>" in content_str and "</think>" in content_str:
+            content_str = re.sub(r"<think>.*?</think>", "", content_str, flags=re.DOTALL).strip()
+        elif "<think>" in content_str:
+            content_str = re.sub(r"<think>.*?(?:</think>|$)", "", content_str, flags=re.DOTALL).strip()
+        else:
+            content_str = content_str.strip()
 
+    # If Groq returned an empty response, fallback to OpenAI
+    if not content_str:
+        openai_key = os.getenv("OPENAI_API_KEY")
+        if openai_key:
+            print("⚠️ Empty response from Groq. Falling back to OpenAI gpt-4o-mini...")
+            fallback_llm = ChatOpenAI(
+                model="gpt-4o-mini",
+                temperature=0,
+                api_key=openai_key.strip().splitlines()[0].strip()
+            )
+            response = fallback_llm.invoke([
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=query),
+            ])
+            content_str = response.content if hasattr(response, "content") else str(response)
+
+    if not content_str:
+        content_str = "بناءً على سياسات المتجر، يُرجى مراجعة صفحة المساعدة أو التواصل مع فريق الدعم."
+
+    response = AIMessage(content=content_str)
     return response, docs
 
 
@@ -114,7 +139,10 @@ def rag_node(state: SupportState) -> dict:
     """RAG Knowledge Node for customer policy & FAQ inquiries."""
     last_message = state["messages"][-1]
     query = last_message.content if hasattr(last_message, "content") else str(last_message)
+    print(f"📚 [RAG Execution] Retrieving company knowledge for: '{query}'")
     response, docs = answer_question(query, k=4)
+    preview = (response.content[:90] + "...") if len(response.content) > 90 else response.content
+    print(f"📚 [RAG Execution] Retrieved {len(docs)} documents. Generated answer: {preview}")
 
     return {
         "messages": [response],

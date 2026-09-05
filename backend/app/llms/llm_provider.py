@@ -26,24 +26,24 @@ def get_llm(temperature: float = 0):
 
     if provider == "groq" and groq_key:
         from langchain_groq import ChatGroq
+        model_name = os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
         return ChatGroq(
-            model_name="qwen/qwen3.6-27b",
+            model_name=model_name,
             temperature=temperature,
             groq_api_key=groq_key,
-            max_tokens=600,
-            model_kwargs={"extra_body": {"reasoning_format": "hidden"}},
+            max_tokens=700,
         )
     elif openai_key:
         from langchain_openai import ChatOpenAI
         return ChatOpenAI(model="gpt-4o-mini", temperature=temperature, api_key=openai_key)
     elif groq_key:
         from langchain_groq import ChatGroq
+        model_name = os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
         return ChatGroq(
-            model_name="qwen/qwen3.6-27b",
+            model_name=model_name,
             temperature=temperature,
             groq_api_key=groq_key,
-            max_tokens=600,
-            model_kwargs={"extra_body": {"reasoning_format": "hidden"}},
+            max_tokens=700,
         )
     else:
         raise ValueError("Neither OPENAI_API_KEY nor GROQ_API_KEY found in environment variables.")
