@@ -169,7 +169,7 @@ async def run_support_pipeline(
     answer_text = last_message.content if hasattr(last_message, "content") else str(last_message)
     if isinstance(answer_text, str):
         import re
-        answer_text = re.sub(r"<think>.*?</think>", "", answer_text, flags=re.DOTALL).strip()
+        answer_text = re.sub(r"<think>.*?(?:</think>|$)", "", answer_text, flags=re.DOTALL).strip()
 
     return {
         "query": query,

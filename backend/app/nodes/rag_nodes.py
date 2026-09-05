@@ -76,15 +76,31 @@ Retrieved company knowledge:
 """
 
     llm = get_llm()
-    response = llm.invoke([
-        SystemMessage(content=system_prompt),
-        HumanMessage(content=query),
-    ])
+    try:
+        response = llm.invoke([
+            SystemMessage(content=system_prompt),
+            HumanMessage(content=query),
+        ])
+    except Exception as e:
+        openai_key = os.getenv("OPENAI_API_KEY")
+        if openai_key and ("rate_limit" in str(e).lower() or "429" in str(e)):
+            print(f"⚠️ Groq rate limit reached ({e}). Automatically falling back to OpenAI gpt-4o-mini...")
+            fallback_llm = ChatOpenAI(
+                model="gpt-4o-mini",
+                temperature=0,
+                api_key=openai_key.strip().splitlines()[0].strip()
+            )
+            response = fallback_llm.invoke([
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=query),
+            ])
+        else:
+            raise e
 
     # Clean <think> tags if model is a reasoning model (e.g. Qwen / DeepSeek)
     if hasattr(response, "content") and isinstance(response.content, str):
         import re
-        cleaned_content = re.sub(r"<think>.*?</think>", "", response.content, flags=re.DOTALL).strip()
+        cleaned_content = re.sub(r"<think>.*?(?:</think>|$)", "", response.content, flags=re.DOTALL).strip()
         response = AIMessage(content=cleaned_content)
 
     return response, docs
