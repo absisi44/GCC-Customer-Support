@@ -89,8 +89,8 @@ async function checkHealth() {
     btn.disabled   = true;
 
     try {
-        // ===== الطلب الفعلي =====
-        const response = await fetch(`${API_BASE}/`, {
+        // ===== الطلب الفعلي (نستخدم /health للحصول على JSON) =====
+        const response = await fetch(`${API_BASE}/health`, {
             method: "GET",
             headers: { "Accept": "application/json" }
         });
