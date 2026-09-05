@@ -1,0 +1,45 @@
+# ==============================================================================
+# Docker Compose for GCC Customer Support AI + PostgreSQL
+# Run locally: docker compose up --build
+# ==============================================================================
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gcc_support_app
+    ports:
+      - "8000:8000"
+      - "3000:8000"
+    env_file:
+      - .env
+    environment:
+      - PORT=8000
+      - DATABASE_URL=postgresql://postgres:admin@postgres:5432/customer_support
+      - CHROMA_PERSIST_DIRECTORY=/app/chroma_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: gcc_support_postgres
+    environment:
+      POSTGRES_DB: customer_support
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d customer_support"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  pgdata:

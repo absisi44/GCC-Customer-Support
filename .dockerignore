@@ -1,0 +1,40 @@
+# Virtual environments & dependencies
+.venv/
+env/
+venv/
+
+# Git
+.git/
+.gitignore
+
+# Python cache & artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+wheels/
+*.egg-info/
+
+# Local secrets & environment files (NEVER bake into image)
+.env
+.env.*
+!.env.example
+
+# Local vector DB caches
+chroma_db/
+backend/chroma_db/
+
+# Notebooks & exploration scripts
+notebook/
+
+# IDE & Editor configs
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Misc
+uv.lock
+*.log

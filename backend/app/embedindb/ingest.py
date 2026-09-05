@@ -4,6 +4,7 @@
 # ==================================================
 
 import json
+import os
 from pathlib import Path
 from typing import List, Optional
 from langchain_core.documents import Document
@@ -16,13 +17,17 @@ from app.embedindb.embeding import GetEmbeddings
 def load_and_chunk_documents(data_dir: Optional[Path] = None) -> List[Document]:
     """Load and chunk company policies and FAQs into Document objects."""
     if data_dir is None:
+        env_data_dir = os.getenv("DATA_DIR")
         cwd = Path.cwd()
         possible_dirs = [
+            Path(env_data_dir) if env_data_dir else None,
             cwd / "data",
             cwd.parent / "data",
             Path(__file__).resolve().parents[3] / "data",
+            Path(__file__).resolve().parents[2] / "data",
+            Path("/app/data"),
         ]
-        data_dir = next((d for d in possible_dirs if d.exists()), cwd / "data")
+        data_dir = next((d for d in possible_dirs if d and d.exists()), cwd / "data")
 
     policy_path = data_dir / "company_policies.md"
     faq_path = data_dir / "faqs.json"

@@ -9,6 +9,7 @@ from typing import Optional, Dict, Any
 from pydantic import BaseModel, Field
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 
 # Ensure backend directory is in python path
@@ -56,18 +57,22 @@ class ChatResponse(BaseModel):
     messages_count: int
 
 
+import asyncio
+
+
 @app.on_event("startup")
 async def startup_event():
-    """Ensure vectorstore is seeded on application startup."""
+    """Ensure vectorstore is seeded on application startup in background."""
     try:
-        ensure_knowledge_base_ready()
+        asyncio.create_task(asyncio.to_thread(ensure_knowledge_base_ready))
     except Exception as e:
         print(f"⚠️ Knowledge base startup warning: {e}")
 
 
-@app.get("/", tags=["Health"])
+@app.get("/health", tags=["Health"])
+@app.get("/api/health", tags=["Health"])
 def health_check():
-    """Health check endpoint."""
+    """Health check endpoint for Railway and container monitoring."""
     return {
         "status": "online",
         "service": "GCC Customer Support AI Multi-Agent System",
@@ -103,7 +108,9 @@ async def chat_endpoint(request: ChatRequest):
             messages_count=result.get("messages_count", 0),
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e) or type(e).__name__)
 
 
 @app.post("/ingest", tags=["Knowledge Base"])
@@ -120,6 +127,30 @@ def reindex_knowledge_base():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ======================================================
+# Mount Frontend Static Files (Option A: Single-service)
+# Mounted after API routes so /chat, /ingest, /health, /docs take precedence
+# ======================================================
+frontend_candidates = [
+    os.path.join(current_dir, "..", "frontend"),
+    os.path.join(os.getcwd(), "frontend"),
+    os.path.join(os.getcwd(), "..", "frontend"),
+    "/app/frontend",
+]
+frontend_dir = next((d for d in frontend_candidates if os.path.isdir(d)), None)
+
+if frontend_dir:
+    app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+    print(f"✅ Mounted frontend static files from: {frontend_dir}")
+else:
+    print("⚠️ Frontend directory not found; serving API mode only.")
+
+    @app.get("/", tags=["Health"])
+    def root_fallback():
+        return health_check()
+
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)

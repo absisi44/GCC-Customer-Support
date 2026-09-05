@@ -30,6 +30,22 @@ from app.embedindb.embeding import GetEmbeddings
 from app.embedindb.ingest import ingest_knowledge_base
 
 
+_checkpointer: Optional[Any] = None
+_postgres_pool: Optional[Any] = None
+
+
+def get_checkpointer() -> Any:
+    """
+    Returns an in-memory state checkpointer for non-blocking, reliable state persistence.
+    MemorySaver natively supports async ainvoke() across all nodes and sessions without external DB dependency.
+    """
+    global _checkpointer
+    if _checkpointer is None:
+        _checkpointer = MemorySaver()
+        print("ℹ️ Using in-memory MemorySaver checkpointer for state persistence.")
+    return _checkpointer
+
+
 def build_support_graph(checkpointer: Optional[Any] = None):
     """
     Builds and compiles the complete multi-agent graph:
@@ -97,7 +113,7 @@ def build_support_graph(checkpointer: Optional[Any] = None):
 
     # 7. Checkpointer Configuration
     if checkpointer is None:
-        checkpointer = MemorySaver()
+        checkpointer = get_checkpointer()
 
     return builder.compile(checkpointer=checkpointer)
 

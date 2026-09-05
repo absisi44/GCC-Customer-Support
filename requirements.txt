@@ -6,7 +6,7 @@ langchain-groq
 langchain-google-genai
 python-dotenv
 langgraph-checkpoint-postgres
-psycopg[binary]
+psycopg[binary,pool]
 langchain-core
 pydantic
 langchain-chroma

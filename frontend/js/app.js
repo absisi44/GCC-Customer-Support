@@ -15,9 +15,9 @@
 
 /**
  * عنوان الـ Backend API
- * غيّر هذا إذا كان السيرفر يعمل على منفذ مختلف
+ * يكتشف الرابط تلقائياً عند رفعه على Railway أو يرجع إلى localhost:8000 محلياً
  */
-const API_BASE = "http://localhost:8000";
+const API_BASE = window.API_BASE || (window.location.origin.startsWith("http") ? window.location.origin : "http://localhost:8000");
 
 /**
  * حالة التطبيق الكاملة — App State
