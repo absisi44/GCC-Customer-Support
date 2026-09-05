@@ -34,7 +34,7 @@ class GetEmbeddings:
                     raise ValueError(
                         "OPENAI_API_KEY is not set. Please add it to your .env file or Railway variables."
                     )
-                self.api_key = api_key
+                self.api_key = api_key.strip().splitlines()[0].strip()
                 self._embeddings = OpenAIEmbeddings(
                     model=self.model_name,
                     api_key=self.api_key,

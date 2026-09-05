@@ -17,6 +17,11 @@ def get_llm(temperature: float = 0):
     openai_key = os.getenv("OPENAI_API_KEY")
     groq_key = os.getenv("GROQ_API_KEY")
 
+    if openai_key:
+        openai_key = openai_key.strip().splitlines()[0].strip()
+    if groq_key:
+        groq_key = groq_key.strip().splitlines()[0].strip()
+
     provider = os.getenv("LLM_PROVIDER", "openai").lower()
 
     if provider == "groq" and groq_key:
