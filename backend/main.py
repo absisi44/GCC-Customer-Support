@@ -63,10 +63,13 @@ import asyncio
 @app.on_event("startup")
 async def startup_event():
     """Ensure vectorstore is seeded on application startup in background."""
-    try:
-        asyncio.create_task(asyncio.to_thread(ensure_knowledge_base_ready))
-    except Exception as e:
-        print(f"⚠️ Knowledge base startup warning: {e}")
+    async def _safe_seed_kb():
+        try:
+            await asyncio.to_thread(ensure_knowledge_base_ready)
+        except Exception as e:
+            print(f"⚠️ Knowledge base initialization notice: {e}")
+
+    asyncio.create_task(_safe_seed_kb())
 
 
 @app.get("/health", tags=["Health"])
